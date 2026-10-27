@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NJIT Student Schedule Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        njitRed: '#C50000',
+                        njitDarkRed: '#9B0000',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navigation Header -->
+    <header class="bg-njitRed text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl font-black tracking-wider">NJIT</span>
+                <span class="text-xl font-light border-l border-white/40 pl-3">Student Schedule Hub</span>
+            </div>
+            <div class="mt-2 sm:mt-0 text-sm bg-white/10 px-3 py-1 rounded-full">
+                Academic Year Tracking
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        
+        <!-- Welcome Banner -->
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Campus Events & Exam Schedules</h1>
+            <p class="text-gray-600">Your centralized tracker for NJIT move-in dates, common exams, and final exam periods. Built for Highlanders.</p>
+        </section>
+
+        <!-- Navigation Tabs / Filter -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-200 pb-4">
+            <button onclick="filterSection('all', event)" class="tab-btn px-4 py-2 bg-njitRed text-white rounded-lg font-medium shadow-sm transition active">All Events</button>
+            <button onclick="filterSection('reslife', event)" class="tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-lg font-medium border border-gray-200 transition">Move-In & ResLife</button>
+            <button onclick="filterSection('common', event)" class="tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-lg font-medium border border-gray-200 transition">Common Exams</button>
+            <button onclick="filterSection('finals', event)" class="tab-btn px-4 py-2 bg-white text-gray-700 hover:bg-gray-100 rounded-lg font-medium border border-gray-200 transition">Final Exams</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="mb-8">
+            <div class="relative">
+                <input type="text" id="searchInput" onkeyup="searchSchedule()" placeholder="Search by course code (e.g., MATH 111), event, or date..." class="w-full px-4 py-3 pl-11 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-njitRed focus:border-transparent">
+                <svg class="w-5 h-5 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Schedule Cards Grid -->
+        <div id="scheduleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Card: Move-In & Welcome -->
+            <div class="schedule-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between" data-category="reslife">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">ResLife / Move-In</span>
+                        <span class="text-xs text-gray-500 font-medium">Housing</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Residence Hall Move-In</h3>
+                    <p class="text-gray-600 text-sm mb-4">New student arrival, check-in procedures, and welcome orientation events across campus residence halls.</p>
+                </div>
+                <div class="border-t border-gray-100 pt-4 mt-2">
+                    <div class="flex justify-between items-center text-sm mb-3">
+                        <span class="font-semibold text-gray-700">Timeline:</span>
+                        <span class="text-njitRed font-bold">Late August (Check Portal)</span>
+                    </div>
+                    <a href="https://www.njit.edu/reslife/" target="_blank" class="block text-center bg-gray-50 hover:bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border border-gray-200 text-sm transition">Official ResLife Page &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Card: Common Exams -->
+            <div class="schedule-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between" data-category="common">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-1 rounded-full">Common Exam</span>
+                        <span class="text-xs text-gray-500 font-medium">MATH / PHYS / CS</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Common Exam Schedule</h3>
+                    <p class="text-gray-600 text-sm mb-4">Coordinated mid-semester common exams typically scheduled on Wednesdays (Day: 4:15 PM - 5:40 PM | Evening: 6:00 PM - 7:25 PM).</p>
+                </div>
+                <div class="border-t border-gray-100 pt-4 mt-2">
+                    <div class="space-y-1 text-sm mb-3">
+                        <div class="flex justify-between"><span class="text-gray-600">Exam Window 1:</span> <span class="font-semibold">September</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Exam Window 2:</span> <span class="font-semibold">October</span></div>
+                        <div class="flex justify-between"><span class="text-gray-600">Exam Window 3:</span> <span class="font-semibold">November</span></div>
+                    </div>
+                    <a href="https://www.njit.edu/registrar/fall-common-exam-schedule" target="_blank" class="block text-center bg-gray-50 hover:bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border border-gray-200 text-sm transition">Full Common Exam List &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Card: Final Exam Period -->
+            <div class="schedule-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between" data-category="finals">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full">Final Exams</span>
+                        <span class="text-xs text-gray-500 font-medium">End of Semester</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Final Examination Period</h3>
+                    <p class="text-gray-600 text-sm mb-4">Comprehensive final exams administered across all coordinated departments and courses during the final week of classes.</p>
+                </div>
+                <div class="border-t border-gray-100 pt-4 mt-2">
+                    <div class="flex justify-between items-center text-sm mb-3">
+                        <span class="font-semibold text-gray-700">Exam Window:</span>
+                        <span class="text-njitRed font-bold">Mid-December</span>
+                    </div>
+                    <a href="https://www.njit.edu/registrar/exams/finalexams" target="_blank" class="block text-center bg-gray-50 hover:bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border border-gray-200 text-sm transition">View Detailed Final Schedule &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Card: Welcome Events -->
+            <div class="schedule-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between" data-category="reslife">
+                <div>
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full">ResLife / Campus</span>
+                        <span class="text-xs text-gray-500 font-medium">Orientation</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Welcome Events & Activities</h3>
+                    <p class="text-gray-600 text-sm mb-4">Activities, campus involvement fairs, and social gatherings designed to help new Highlanders transition into campus life.</p>
+                </div>
+                <div class="border-t border-gray-100 pt-4 mt-2">
+                    <div class="flex justify-between items-center text-sm mb-3">
+                        <span class="font-semibold text-gray-700">Status:</span>
+                        <span class="text-gray-600">Active Opening Week</span>
+                    </div>
+                    <a href="https://www.njit.edu/reslife/fall-2024-welcome-events" target="_blank" class="block text-center bg-gray-50 hover:bg-gray-100 text-gray-800 font-medium py-2 rounded-lg border border-gray-200 text-sm transition">Welcome Events Schedule &rarr;</a>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12 py-6 text-center text-sm text-gray-500">
+        <p>Unofficial NJIT Student Resource Hub. Always verify official times on <a href="https://www.njit.edu" target="_blank" class="text-njitRed underline hover:text-njitDarkRed">NJIT.edu</a>.</p>
+    </footer>
+
+    <!-- JavaScript for Filtering and Searching -->
+    <script>
+        function filterSection(category, event) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-njitRed', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-700');
+            });
+            event.target.classList.remove('bg-white', 'text-gray-700');
+            event.target.classList.add('bg-njitRed', 'text-white');
+
+            const cards = document.querySelectorAll('.schedule-card');
